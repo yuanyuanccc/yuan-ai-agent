@@ -1,9 +1,11 @@
 package com.yuanc.yuanaiagent.rag;
 
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.ai.document.Document;
+
 import org.springframework.ai.reader.markdown.MarkdownDocumentReader;
 import org.springframework.ai.reader.markdown.config.MarkdownDocumentReaderConfig;
+
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.ai.document.Document;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.ResourcePatternResolver;
 import org.springframework.stereotype.Component;
@@ -14,7 +16,7 @@ import java.util.List;
 
 @Component
 @Slf4j
-public class LoveAppDocumentLoader {
+class LoveAppDocumentLoader {
 
     private final ResourcePatternResolver resourcePatternResolver;
 
@@ -25,7 +27,9 @@ public class LoveAppDocumentLoader {
     public List<Document> loadMarkdowns() {
         List<Document> allDocuments = new ArrayList<>();
         try {
+            // 这里可以修改为你要加载的多个 Markdown 文件的路径模式
             Resource[] resources = resourcePatternResolver.getResources("classpath:document/*.md");
+        log.info("Found {} resources matching pattern classpath:document/*.md", resources.length);
             for (Resource resource : resources) {
                 String fileName = resource.getFilename();
                 MarkdownDocumentReaderConfig config = MarkdownDocumentReaderConfig.builder()
@@ -34,7 +38,7 @@ public class LoveAppDocumentLoader {
                         .withIncludeBlockquote(false)
                         .withAdditionalMetadata("filename", fileName)
                         .build();
-                MarkdownDocumentReader reader = new MarkdownDocumentReader(resource,config);
+                MarkdownDocumentReader reader = new MarkdownDocumentReader(resource, config);
                 allDocuments.addAll(reader.get());
             }
         } catch (IOException e) {
@@ -43,3 +47,4 @@ public class LoveAppDocumentLoader {
         return allDocuments;
     }
 }
+
